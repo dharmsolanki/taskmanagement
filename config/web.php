@@ -19,9 +19,11 @@ $config = [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            // 'enableAutoLogin' => true,
+            'authTimeout' => 1800,
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -46,6 +48,7 @@ $config = [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'check-timeout' => 'site/check-timeout',
             ],
         ],
     ],

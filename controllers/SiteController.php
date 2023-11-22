@@ -10,6 +10,7 @@ use yii\filters\VerbFilter;
 use app\models\LoginForm;
 use app\models\ContactForm;
 use app\models\RegistrationForm;
+use app\models\Task;
 use app\models\User;
 
 class SiteController extends Controller
@@ -63,7 +64,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        return $this->redirect('site/login');
     }
 
     /**
@@ -100,6 +101,8 @@ class SiteController extends Controller
 
         // Check if the user is logged in
         if ($user) {
+
+            $userTask = Task::find()->where(['user_id'=> $user->id])->all();
             // You can now use $user to access the user's attributes
             $username = $user->username;
             $email = $user->email;
@@ -107,6 +110,7 @@ class SiteController extends Controller
             return $this->render('dashboard', [
                 'username' => $username,
                 'email' => $email,
+                'userTask'=> $userTask
             ]);
         } else {
             // Redirect to the login page if the user is not logged in
@@ -188,6 +192,19 @@ class SiteController extends Controller
     }
 
     public function actionAdd(){
-        echo '<pre>'; print_r('add');exit();
+        $model = new Task();
+        
+        if(Yii::$app->request->isPost){
+            $model->task_name = Yii::$app->request->post('taskName');
+            $model->description = Yii::$app->request->post('taskDescription');
+            $model->user_id = Yii::$app->user->identity->id;
+            if($model->save(false)){
+                Yii::$app->session->setFlash('success', 'Task Added successful!');
+            } else {
+                Yii::$app->session->setFlash('danger', 'Try Again!');
+            }
+        }
+
+        return $this->redirect('dashboard');
     }
 }
