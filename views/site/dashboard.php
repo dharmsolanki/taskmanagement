@@ -22,7 +22,7 @@ $this->title = 'Dashboard';
         <a href="<?php //echo Yii::$app->urlManager->createUrl(['site/add']) 
                     use yii\helpers\Html;
                     use yii\helpers\Url;
-                    ?>" class="btn btn-primary float-right" type="button" data-toggle="modal" data-target="#myModal">Add Task</a>
+                    ?>" class="btn btn-primary float-right" type="button" data-toggle="modal" data-target="#myModal"><i class="fa-solid fa-plus"></i> Add Task</a>
     </div>
 
     <!-- Modal -->
@@ -36,14 +36,31 @@ $this->title = 'Dashboard';
                 </div>
                 <div class="modal-body">
                     <!-- Task Form -->
-                    <form id="taskForm" action="add" method="post">
+                    <form id="taskForm" action="<?= Url::to(['site/add']) ?>" method="post">
                         <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
                         <div class="form-group">
-                            <label for="taskName">Task Name:</label>
+                            <label for="taskName">Task Title</label>
                             <input type="text" class="form-control" id="taskName" name="taskName" required>
                         </div>
                         <div class="form-group">
-                            <label for="taskDescription">Task Description:</label>
+                            <label for="taskName">Start Date</label>
+                            <input type="date" class="form-control" id="startDate" name="startDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskName">End Date</label>
+                            <input type="date" class="form-control" id="endDate" name="endDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskName">Progress</label>
+                            <select class="form-select" aria-label="Default select example" name="progress">
+                                <option selected>Select</option>
+                                <option value="1">Hold</option>
+                                <option value="2">In Progress</option>
+                                <option value="3">Complete</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="taskDescription">Task Description</label>
                             <textarea class="form-control" id="taskDescription" name="taskDescription" rows="4" required></textarea>
                         </div>
                         <button type="submit" class="btn btn-success">Save Task</button>
@@ -57,30 +74,28 @@ $this->title = 'Dashboard';
 
 <!-- Display Table of User Created Tasks -->
 <div class="table-responsive">
-    <table class="table table-bordered">
-        <thead>
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
             <tr>
-                <th>Sr.No.</th>
+                <th>#</th>
                 <th>Task Name</th>
                 <th>Description</th>
                 <th>Action</th>
-                <!-- You can add more columns as needed -->
             </tr>
         </thead>
         <tbody>
-            <!-- Example rows (replace this with your dynamic data) -->
             <?php foreach ($userTask as $key => $model) { ?>
                 <tr>
                     <td><?= $key + 1 ?></td>
                     <td><?= $model->task_name ?></td>
                     <td><?= $model->description ?></td>
                     <td>
-                        <!-- Edit Button to Open Modal -->
-                        
-                        <button class="btn btn-primary" data-toggle="modal" data-target="#editModal<?= $model->id ?>">
-                        <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-
+                        <div class="btn-group" role="group" aria-label="Task Actions">
+                            <!-- Edit Button to Open Modal -->
+                            <button class="btn btn-primary" data-toggle="modal" data-target="#editModal<?= $model->id ?>">
+                                <i class="fa-solid fa-pen-to-square"></i> Edit
+                            </button>
+                        </div>
                     </td>
                 </tr>
 
@@ -98,11 +113,27 @@ $this->title = 'Dashboard';
                                 <form id="taskEditForm<?= $model->id ?>" action="<?= Url::to(['site/update', 'id' => $model->id]) ?>" method="post">
                                     <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
                                     <div class="form-group">
-                                        <label for="taskName<?= $model->id ?>">Task Name:</label>
+                                        <label for="taskName<?= $model->id ?>">Task Title</label>
                                         <input type="text" class="form-control" id="taskName<?= $model->id ?>" name="taskName" value="<?= $model->task_name ?>" required>
                                     </div>
                                     <div class="form-group">
-                                        <label for="taskDescription<?= $model->id ?>">Task Description:</label>
+                                        <label for="taskName<?= $model->id ?>">Start Date</label>
+                                        <input type="date" class="form-control" id="startDate<?= $model->id ?>" name="startDate" value="<?= $model->start_date ?>" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="taskName<?= $model->id ?>">End Date</label>
+                                        <input type="date" class="form-control" id="endDate<?= $model->id ?>" name="endDate" value="<?= $model->end_date ?>" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="progress<?= $model->id ?>">Progress</label>
+                                        <select class="form-select" id="progress<?= $model->id ?>" name="progress" aria-label="Default select example">
+                                            <option value="1" <?= $model->progress == 1 ? 'selected' : '' ?>>Hold</option>
+                                            <option value="2" <?= $model->progress == 2 ? 'selected' : '' ?>>In Progress</option>
+                                            <option value="3" <?= $model->progress == 3 ? 'selected' : '' ?>>Complete</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="taskDescription<?= $model->id ?>">Task Description</label>
                                         <textarea class="form-control" id="taskDescription<?= $model->id ?>" name="taskDescription" rows="4" required><?= $model->description ?></textarea>
                                     </div>
                                     <button type="submit" class="btn btn-success">Update Task</button>
@@ -115,7 +146,6 @@ $this->title = 'Dashboard';
                 <!-- End Edit Task Modal -->
 
             <?php } ?>
-            <!-- Add more rows as needed -->
         </tbody>
     </table>
 </div>

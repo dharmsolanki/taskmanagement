@@ -67,7 +67,7 @@ class SiteController extends Controller
     {
         return $this->redirect(['login']);
     }
-    
+
 
     /**
      * Login action.
@@ -195,10 +195,14 @@ class SiteController extends Controller
 
     public function actionAdd()
     {
+        // echo '<pre>'; print_r(Yii::$app->request->post());exit();
         $model = new Task();
 
         if (Yii::$app->request->isPost) {
             $model->task_name = Yii::$app->request->post('taskName');
+            $model->start_date = Yii::$app->request->post('startDate');
+            $model->end_date = Yii::$app->request->post('endDate');
+            $model->progress = Yii::$app->request->post('progress');
             $model->description = Yii::$app->request->post('taskDescription');
             $model->user_id = Yii::$app->user->identity->id;
             if ($model->save(false)) {
@@ -240,7 +244,7 @@ class SiteController extends Controller
                 Yii::$app->session->setFlash('danger', 'Error updating task. Try again!');
             }
         }
-
-        return $this->redirect(['site/dashboard']);
+        // rule add in web.php for site/dashboard 
+        return $this->redirect(['dashboard']);
     }
 }

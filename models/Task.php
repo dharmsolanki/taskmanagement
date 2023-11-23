@@ -1,5 +1,4 @@
 <?php
-
 namespace app\models;
 
 use Yii;
@@ -11,6 +10,9 @@ use Yii;
  * @property string|null $task_name
  * @property string|null $description
  * @property int|null $user_id
+ * @property string|null $start_date
+ * @property string|null $end_date
+ * @property int|null $progress
  *
  * @property User $user
  */
@@ -30,8 +32,10 @@ class Task extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id'], 'integer'],
-            [['task_name', 'description'], 'string', 'max' => 250],
+            [['user_id', 'progress'], 'integer'],
+            [['task_name'], 'string', 'max' => 250],
+            [['description'], 'string', 'max' => 1000],
+            [['start_date', 'end_date'], 'date', 'format' => 'php:Y-m-d'],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -46,6 +50,9 @@ class Task extends \yii\db\ActiveRecord
             'task_name' => 'Task Name',
             'description' => 'Description',
             'user_id' => 'User ID',
+            'start_date' => 'Start Date',
+            'end_date' => 'End Date',
+            'progress' => 'Progress',
         ];
     }
 
