@@ -49,6 +49,8 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 'check-timeout' => 'site/check-timeout',
+                'login' => 'site/login',
+                'dashboard' => 'site/dashboard',
             ],
         ],
     ],

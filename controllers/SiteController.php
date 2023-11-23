@@ -12,6 +12,7 @@ use app\models\ContactForm;
 use app\models\RegistrationForm;
 use app\models\Task;
 use app\models\User;
+use yii\web\NotFoundHttpException;
 
 class SiteController extends Controller
 {
@@ -64,8 +65,9 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->redirect('site/login');
+        return $this->redirect(['login']);
     }
+    
 
     /**
      * Login action.
@@ -102,7 +104,7 @@ class SiteController extends Controller
         // Check if the user is logged in
         if ($user) {
 
-            $userTask = Task::find()->where(['user_id'=> $user->id])->all();
+            $userTask = Task::find()->where(['user_id' => $user->id])->all();
             // You can now use $user to access the user's attributes
             $username = $user->username;
             $email = $user->email;
@@ -110,7 +112,7 @@ class SiteController extends Controller
             return $this->render('dashboard', [
                 'username' => $username,
                 'email' => $email,
-                'userTask'=> $userTask
+                'userTask' => $userTask
             ]);
         } else {
             // Redirect to the login page if the user is not logged in
@@ -191,14 +193,15 @@ class SiteController extends Controller
         ]);
     }
 
-    public function actionAdd(){
+    public function actionAdd()
+    {
         $model = new Task();
-        
-        if(Yii::$app->request->isPost){
+
+        if (Yii::$app->request->isPost) {
             $model->task_name = Yii::$app->request->post('taskName');
             $model->description = Yii::$app->request->post('taskDescription');
             $model->user_id = Yii::$app->user->identity->id;
-            if($model->save(false)){
+            if ($model->save(false)) {
                 Yii::$app->session->setFlash('success', 'Task Added successful!');
             } else {
                 Yii::$app->session->setFlash('danger', 'Try Again!');
@@ -206,5 +209,38 @@ class SiteController extends Controller
         }
 
         return $this->redirect('dashboard');
+    }
+
+    public function actionEdit($id)
+    {
+        // Find the task by its ID
+        $task = Task::findOne($id);
+
+        if (!$task) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        // Render the edit view with the task details
+        return $this->render('edit', [
+            'task' => $task,
+        ]);
+    }
+
+    public function actionUpdate($id)
+    {
+        $model = Task::findOne($id);
+
+        if (Yii::$app->request->isPost) {
+            $model->task_name = Yii::$app->request->post('taskName');
+            $model->description = Yii::$app->request->post('taskDescription');
+
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', 'Task updated successfully!');
+            } else {
+                Yii::$app->session->setFlash('danger', 'Error updating task. Try again!');
+            }
+        }
+
+        return $this->redirect(['site/dashboard']);
     }
 }

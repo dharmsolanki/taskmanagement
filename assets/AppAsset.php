@@ -8,7 +8,6 @@
 namespace app\assets;
 
 use yii\web\AssetBundle;
-use yii\bootstrap4\BootstrapAsset;
 
 /**
  * Main application asset bundle.
@@ -23,10 +22,12 @@ class AppAsset extends AssetBundle
     public $css = [
         'css/site.css',
         'css/dashboard.css',
+        'css/fontawesome.min.css',
         // Add Bootstrap 4 CSS
         'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css',
     ];
     public $js = [
+        'js/fontawesome.js',
         // Add Bootstrap 4 JS
         'https://code.jquery.com/jquery-3.3.1.slim.min.js',
         'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js',
