@@ -74,78 +74,99 @@ $this->title = 'Dashboard';
 
 <!-- Display Table of User Created Tasks -->
 <div class="table-responsive">
-    <table class="table table-bordered table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>#</th>
-                <th>Task Name</th>
-                <th>Description</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($userTask as $key => $model) { ?>
+    <?php if (empty($userTask)) : ?>
+        <p>No Task found.</p>
+    <?php else : ?>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
                 <tr>
-                    <td><?= $key + 1 ?></td>
-                    <td><?= $model->task_name ?></td>
-                    <td><?= $model->description ?></td>
-                    <td>
-                        <div class="btn-group" role="group" aria-label="Task Actions">
-                            <!-- Edit Button to Open Modal -->
-                            <button class="btn btn-primary" data-toggle="modal" data-target="#editModal<?= $model->id ?>">
-                                <i class="fa-solid fa-pen-to-square"></i> Edit
-                            </button>
-                        </div>
-                    </td>
+                    <th>Sr No</th>
+                    <th>Task Name</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Progress</th>
+                    <th>Description</th>
+                    <th>Action</th>
                 </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($userTask as $key => $model) { ?>
+                    <tr>
+                        <td><?= $key + 1 ?></td>
+                        <td><?= $model->task_name ?></td>
+                        <td><?= date("d/m/Y", strtotime($model->start_date)) ?></td>
+                        <td><?= date("d/m/Y", strtotime($model->end_date)) ?></td>
+                        <td>
+                            <?php
+                            $progressLabels = [
+                                1 => 'Hold',
+                                2 => 'In Progress',
+                                3 => 'Complete',
+                            ];
 
-                <!-- Edit Task Modal -->
-                <div class="modal fade" id="editModal<?= $model->id ?>" role="dialog">
-                    <div class="modal-dialog">
-                        <!-- Modal content -->
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h4 class="modal-title">Edit Task</h4>
-                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            echo $progressLabels[$model->progress] ?? 'Unknown';
+                            ?>
+                        </td>
+
+                        <td><?= $model->description ?></td>
+                        <td>
+                            <div class="btn-group" role="group" aria-label="Task Actions">
+                                <!-- Edit Button to Open Modal -->
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#editModal<?= $model->id ?>">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                </button>
                             </div>
-                            <div class="modal-body">
-                                <!-- Task Edit Form -->
-                                <form id="taskEditForm<?= $model->id ?>" action="<?= Url::to(['site/update', 'id' => $model->id]) ?>" method="post">
-                                    <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
-                                    <div class="form-group">
-                                        <label for="taskName<?= $model->id ?>">Task Title</label>
-                                        <input type="text" class="form-control" id="taskName<?= $model->id ?>" name="taskName" value="<?= $model->task_name ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="taskName<?= $model->id ?>">Start Date</label>
-                                        <input type="date" class="form-control" id="startDate<?= $model->id ?>" name="startDate" value="<?= $model->start_date ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="taskName<?= $model->id ?>">End Date</label>
-                                        <input type="date" class="form-control" id="endDate<?= $model->id ?>" name="endDate" value="<?= $model->end_date ?>" required>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="progress<?= $model->id ?>">Progress</label>
-                                        <select class="form-select" id="progress<?= $model->id ?>" name="progress" aria-label="Default select example">
-                                            <option value="1" <?= $model->progress == 1 ? 'selected' : '' ?>>Hold</option>
-                                            <option value="2" <?= $model->progress == 2 ? 'selected' : '' ?>>In Progress</option>
-                                            <option value="3" <?= $model->progress == 3 ? 'selected' : '' ?>>Complete</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="taskDescription<?= $model->id ?>">Task Description</label>
-                                        <textarea class="form-control" id="taskDescription<?= $model->id ?>" name="taskDescription" rows="4" required><?= $model->description ?></textarea>
-                                    </div>
-                                    <button type="submit" class="btn btn-success">Update Task</button>
-                                </form>
-                                <!-- End Task Edit Form -->
+                        </td>
+                    </tr>
+
+                    <!-- Edit Task Modal -->
+                    <div class="modal fade" id="editModal<?= $model->id ?>" role="dialog">
+                        <div class="modal-dialog">
+                            <!-- Modal content -->
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h4 class="modal-title">Edit Task</h4>
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Task Edit Form -->
+                                    <form id="taskEditForm<?= $model->id ?>" action="<?= Url::to(['site/update', 'id' => $model->id]) ?>" method="post">
+                                        <?= Html::hiddenInput(Yii::$app->request->csrfParam, Yii::$app->request->csrfToken) ?>
+                                        <div class="form-group">
+                                            <label for="taskName<?= $model->id ?>">Task Title</label>
+                                            <input type="text" class="form-control" id="taskName<?= $model->id ?>" name="taskName" value="<?= $model->task_name ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="taskName<?= $model->id ?>">Start Date</label>
+                                            <input type="date" class="form-control" id="startDate<?= $model->id ?>" name="startDate" value="<?= $model->start_date ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="taskName<?= $model->id ?>">End Date</label>
+                                            <input type="date" class="form-control" id="endDate<?= $model->id ?>" name="endDate" value="<?= $model->end_date ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="progress<?= $model->id ?>">Progress</label>
+                                            <select class="form-select" id="progress<?= $model->id ?>" name="progress" aria-label="Default select example">
+                                                <option value="1" <?= $model->progress == 1 ? 'selected' : '' ?>>Hold</option>
+                                                <option value="2" <?= $model->progress == 2 ? 'selected' : '' ?>>In Progress</option>
+                                                <option value="3" <?= $model->progress == 3 ? 'selected' : '' ?>>Complete</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="taskDescription<?= $model->id ?>">Task Description</label>
+                                            <textarea class="form-control" id="taskDescription<?= $model->id ?>" name="taskDescription" rows="4" required><?= $model->description ?></textarea>
+                                        </div>
+                                        <button type="submit" class="btn btn-success">Update Task</button>
+                                    </form>
+                                    <!-- End Task Edit Form -->
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- End Edit Task Modal -->
+                    <!-- End Edit Task Modal -->
 
-            <?php } ?>
-        </tbody>
-    </table>
+                <?php } ?>
+            </tbody>
+        </table>
+    <?php endif; ?>
 </div>

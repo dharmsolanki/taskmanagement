@@ -68,7 +68,6 @@ class SiteController extends Controller
         return $this->redirect(['login']);
     }
 
-
     /**
      * Login action.
      *
@@ -170,12 +169,10 @@ class SiteController extends Controller
 
     public function actionRegister()
     {
-        // echo '<pre>'; print_r('here');exit();
         $model = new RegistrationForm();
 
         if ($model->load(Yii::$app->request->post()) && $model->validate()) {
-            // Save the user to the database or perform other registration logic
-            // For simplicity, let's assume User model exists with 'username', 'password', and 'email' attributes
+
             $user = new User();
             $user->username = $model->username;
             $user->password_hash = Yii::$app->security->generatePasswordHash($model->password);
@@ -236,6 +233,9 @@ class SiteController extends Controller
 
         if (Yii::$app->request->isPost) {
             $model->task_name = Yii::$app->request->post('taskName');
+            $model->start_date = Yii::$app->request->post('startDate');
+            $model->end_date = Yii::$app->request->post('endDate');
+            $model->progress = Yii::$app->request->post('progress');
             $model->description = Yii::$app->request->post('taskDescription');
 
             if ($model->save()) {
