@@ -247,4 +247,19 @@ class SiteController extends Controller
         // rule add in web.php for site/dashboard 
         return $this->redirect(['dashboard']);
     }
+
+    // Path: controllers/SiteController.php
+
+    public function actionDelete($id)
+    {
+        $model = Task::findOne($id);
+
+        if (!$model) {
+            throw new NotFoundHttpException('The requested page does not exist.');
+        }
+
+        $model->delete();
+
+        return $this->redirect(['dashboard']); // Redirect to the index page or any other page after deletion
+    }
 }
