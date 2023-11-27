@@ -23,6 +23,10 @@ $this->title = 'Dashboard';
                     use yii\helpers\Html;
                     use yii\helpers\Url;
                     ?>" class="btn btn-primary float-right" type="button" data-toggle="modal" data-target="#myModal"><i class="fa-solid fa-plus"></i> Add Task</a>
+
+        <a class="btn btn-danger" href="javascript:void(0);" onclick="confirmDeleteAll()">
+            <i class="fa-solid fa-trash"></i> Delete All
+        </a>
     </div>
 
     <!-- Modal -->
@@ -71,6 +75,10 @@ $this->title = 'Dashboard';
         </div>
     </div>
 </div>
+<!-- Display Note for Users -->
+<div class="alert alert-info my-3">
+    <p><strong>Note:</strong> Once a task is marked as complete, you won't be able to edit it. Make sure all details are accurate before marking a task as complete.</p>
+</div>
 
 <!-- Display Table of User Created Tasks -->
 <div class="table-responsive">
@@ -112,7 +120,7 @@ $this->title = 'Dashboard';
                         <td>
                             <div class="btn-group" role="group" aria-label="Task Actions">
                                 <!-- Edit Button to Open Modal -->
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#editModal<?= $model->id ?>" <?= $model->progress == 3 ? 'disabled' : '' ?>>
+                                <button class="btn btn-primary" id="btn-edit" data-toggle="modal" data-target="#editModal<?= $model->id ?>" style="display: <?= $model->progress === 3 ? 'none':'' ?>;">
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </button>
                             </div>
@@ -179,6 +187,12 @@ $this->title = 'Dashboard';
     function confirmDelete(itemId) {
         if (confirm("Are you sure you want to delete this item?")) {
             window.location.href = '/taskmanage/web/site/delete/' + itemId;
+        }
+    }
+
+    function confirmDeleteAll() {
+        if (confirm("Are you sure you want to delete all this item?")) {
+            window.location.href = '/taskmanage/web/site/delete-all/';
         }
     }
 </script>

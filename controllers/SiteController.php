@@ -248,8 +248,6 @@ class SiteController extends Controller
         return $this->redirect(['dashboard']);
     }
 
-    // Path: controllers/SiteController.php
-
     public function actionDelete($id)
     {
         $model = Task::findOne($id);
@@ -258,8 +256,23 @@ class SiteController extends Controller
             throw new NotFoundHttpException('The requested page does not exist.');
         }
 
-        $model->delete();
+        if ($model->delete()) {
+            Yii::$app->session->setFlash('success', 'Task Deleted successfully!');
+        } else {
+            Yii::$app->session->setFlash('danger', 'Try again!');
+        }
 
-        return $this->redirect(['dashboard']); // Redirect to the index page or any other page after deletion
+        return $this->redirect(['dashboard']);
+    }
+
+    public function actionDeleteAll()
+    {
+        $model = Task::deleteAll(['user_id' => Yii::$app->user->identity->id]);
+        if ($model) {
+            Yii::$app->session->setFlash('success', 'All Task Deleted successfully!');
+        } else {
+            Yii::$app->session->setFlash('danger', 'Try again!');
+        }
+        return $this->redirect(['dashboard']);
     }
 }
