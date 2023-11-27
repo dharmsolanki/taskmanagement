@@ -112,9 +112,14 @@ $this->title = 'Dashboard';
                         <td>
                             <div class="btn-group" role="group" aria-label="Task Actions">
                                 <!-- Edit Button to Open Modal -->
-                                <button class="btn btn-primary" data-toggle="modal" data-target="#editModal<?= $model->id ?>">
+                                <button class="btn btn-primary" data-toggle="modal" data-target="#editModal<?= $model->id ?>" <?= $model->progress == 3 ? 'disabled' : '' ?>>
                                     <i class="fa-solid fa-pen-to-square"></i> Edit
                                 </button>
+                            </div>
+                            <div class="btn-group" role="group" aria-label="Task Actions">
+                                <a class="btn btn-danger" href="javascript:void(0);" onclick="confirmDelete(<?= $model->id ?>)">
+                                    <i class="fa-solid fa-trash"></i> Delete
+                                </a>
                             </div>
                         </td>
                     </tr>
@@ -170,3 +175,10 @@ $this->title = 'Dashboard';
         </table>
     <?php endif; ?>
 </div>
+<script>
+    function confirmDelete(itemId) {
+        if (confirm("Are you sure you want to delete this item?")) {
+            window.location.href = '/taskmanage/web/site/delete/' + itemId;
+        }
+    }
+</script>

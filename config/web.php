@@ -51,6 +51,7 @@ $config = [
                 'check-timeout' => 'site/check-timeout',
                 'login' => 'site/login',
                 'dashboard' => 'site/dashboard',
+                'site/delete/<id:\d+>' => 'site/delete',
             ],
         ],
     ],
